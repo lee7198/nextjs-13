@@ -5,7 +5,7 @@ const nextConfig = {
   },
   images: {
     //도메인 넣어줘야함
-    domains: ["resizer.otstatic.com"],
+    domains: ["resizer.otstatic.com", "images.otstatic.com"],
   },
 };
 
