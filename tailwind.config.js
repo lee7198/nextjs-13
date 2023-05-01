@@ -12,7 +12,7 @@ module.exports = {
       "2xl": "22px",
       "3xl": "25px",
       "4xl": "23px",
-      "5xl": "40x",
+      "5xl": "40px",
       "6xl": "50px",
       "7xl": "70px",
     },
