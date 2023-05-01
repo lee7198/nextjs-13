@@ -11,7 +11,7 @@ module.exports = {
       lg: "18px",
       "2xl": "22px",
       "3xl": "25px",
-      "4xl": "232px",
+      "4xl": "23px",
       "5xl": "40x",
       "6xl": "50px",
       "7xl": "70px",
