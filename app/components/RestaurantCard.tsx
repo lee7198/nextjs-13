@@ -5,7 +5,7 @@ import Price from "./Price";
 
 interface Props {
   restaurant: RestaurantCardType;
-}
+} 
 
 export default function RestaurantCard({ restaurant }: Props) {
   return (
