@@ -65,7 +65,7 @@ model User {
   password      String
   email         String
   phone         String
-  reveiw Review[]
+  review        Review[]
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
 }
@@ -75,9 +75,9 @@ model Review {
   first_name    String    
   last_name     String
   text          String
-  rating        String
+  rating        Float
   restaurant_id Int
-  restaurant    Restaurant @relation(fields: [restaurant_id], references: [id])
+  restaurant    Restaurant  @relation(fields: [restaurant_id], references: [id])
   user_id       Int
   user          User @relation(fields: [user_id], references: [id])
 }
