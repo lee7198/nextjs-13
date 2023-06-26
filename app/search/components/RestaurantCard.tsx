@@ -22,7 +22,7 @@ export default function RestaurantCard({
         src={restaurant.main_image}
         alt=""
         className="w-44 rounded"
-        width={500}
+        width={650}
         height={500}
       />
       <div className="pl-5">
