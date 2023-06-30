@@ -1,8 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
+//next에서 backend 처리하기위한 req, res
 import validator from "validator";
+// valid 패키지
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+//비밀번호 부호화
 import * as jose from "jose";
+//jwt 처리해주는 패키지
 
 const prisma = new PrismaClient();
 
@@ -13,6 +17,7 @@ export default async function handler(
   if (req.method === "POST") {
     const { firstName, lastName, email, password, phone, city } = req.body;
     const errors: string[] = [];
+    //error 처리 array
     const validatationSchema = [
       {
         valid: validator.isLength(firstName, {
@@ -48,6 +53,7 @@ export default async function handler(
       },
     ];
 
+    //스키마 순회하며 에러 체크
     validatationSchema.forEach((check) => {
       if (!check.valid) errors.push(check.errorMessage);
     });
@@ -92,8 +98,9 @@ export default async function handler(
       .setExpirationTime("24h")
       .sign(secret);
 
-    res.status(200).json({
-      hello: token,
+    return res.status(200).json({
+      token,
     });
   }
+  return res.status(404).json("Unkown endpoint");
 }
