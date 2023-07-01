@@ -74,7 +74,7 @@ export default function AuthModalInputs({
       )}
       <div className="my-3 flex justify-beteen text-sm">
         <input
-          type="text"
+          type="password"
           className="border rounded p-2 py-3 w-full"
           placeholder="Password"
           value={inputs.password}
