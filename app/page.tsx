@@ -35,7 +35,6 @@ const fetchRestaurants = async (): Promise<RestaurantCardType[]> => {
 export default async function Home() {
   const restaurants = await fetchRestaurants();
   //server component라서 서버의 콘솔에 표시됨
-  console.log({ restaurants });
   return (
     <main>
       <Header />

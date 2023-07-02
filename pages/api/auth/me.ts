@@ -16,7 +16,7 @@ export default async function handler(
   if (payload.email)
     return res.status(401).json({ errorMessage: "Unauthorized" });
 
-  const user = await prisma.user.findUnique({
+  const userData = await prisma.user.findUnique({
     where: {
       email: payload.email,
     },
@@ -30,5 +30,15 @@ export default async function handler(
     },
   });
 
-  return res.json({ user });
+  if (!userData) {
+    return res.status(401).json({ errorMessage: "Unauthorized" });
+  }
+
+  return res.json({
+    id: userData?.id,
+    firstName: userData?.first_name,
+    lastName: userData?.last_name,
+    phone: userData?.phone,
+    city: userData?.city,
+  });
 }

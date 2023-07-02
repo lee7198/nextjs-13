@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 //비밀번호 부호화
 import * as jose from "jose";
-//jwt 처리해주는 패키지
+import { setCookie } from "cookies-next";
 
 const prisma = new PrismaClient();
 
@@ -77,7 +77,7 @@ export default async function handler(
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
+    const userData = await prisma.user.create({
       data: {
         first_name: firstName,
         last_name: lastName,
@@ -92,14 +92,19 @@ export default async function handler(
     const secret = new TextEncoder().encode(process.env.JWT_SECRET as string);
 
     const token = await new jose.SignJWT({
-      email: user.email,
+      email: userData.email,
     })
       .setProtectedHeader({ alg })
       .setExpirationTime("24h")
       .sign(secret);
 
+    setCookie("OpenTableJWT", token, { req, res, maxAge: 86400 });
+
     return res.status(200).json({
-      token,
+      firstName: userData.first_name,
+      lastName: userData.last_name,
+      email: userData.email,
+      phone: userData.phone,
     });
   }
   return res.status(404).json("Unkown endpoint");
