@@ -9,13 +9,13 @@ type Data = {
 };
 
 export async function GET() {
-  //   await prisma.table.deleteMany();
-  // await prisma.review.deleteMany();
+  await prisma.table.deleteMany();
+  await prisma.review.deleteMany();
   await prisma.item.deleteMany();
   await prisma.restaurant.deleteMany();
   await prisma.location.deleteMany();
   await prisma.cuisine.deleteMany();
-  // await prisma.user.deleteMany();
+  await prisma.user.deleteMany();
 
   await prisma.location.createMany({
     data: [{ name: "ottawa" }, { name: "toronto" }, { name: "niagara" }],
@@ -1303,22 +1303,22 @@ export async function GET() {
     ],
   });
 
-  // await prisma.table.createMany({
-  //   data: [
-  //     {
-  //       restaurant_id: vivaanId,
-  //       seats: 4,
-  //     },
-  //     {
-  //       restaurant_id: vivaanId,
-  //       seats: 4,
-  //     },
-  //     {
-  //       restaurant_id: vivaanId,
-  //       seats: 2,
-  //     },
-  //   ],
-  // });
+  await prisma.table.createMany({
+    data: [
+      {
+        restaurant_id: vivaanId,
+        seats: 4,
+      },
+      {
+        restaurant_id: vivaanId,
+        seats: 4,
+      },
+      {
+        restaurant_id: vivaanId,
+        seats: 2,
+      },
+    ],
+  });
 
   return NextResponse.json("all done");
 }
