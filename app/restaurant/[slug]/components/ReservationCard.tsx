@@ -1,13 +1,13 @@
 "use client";
-import { useState } from "react";
-import { partySize as PartySizes, times } from "../../../../data";
+import { partySize as partySizes, times } from "../../../../data";
 import DatePicker from "react-datepicker";
+import { useState } from "react";
 import useAvailabilities from "../../../../hooks/useAvailabilities";
 import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 import {
-  Time,
   convertToDisplayTime,
+  Time,
 } from "../../../../utils/convertToDisplayTime";
 
 export default function ReservationCard({
@@ -22,29 +22,15 @@ export default function ReservationCard({
   const { data, loading, error, fetchAvailabilities } = useAvailabilities();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [time, setTime] = useState(openTime);
-  const [partySize, setPartySize] = useState("6");
+  const [partySize, setPartySize] = useState("2");
   const [day, setDay] = useState(new Date().toISOString().split("T")[0]);
 
-  const handleChange = (date: Date | null) => {
+  const handleChangeDate = (date: Date | null) => {
     if (date) {
       setDay(date.toISOString().split("T")[0]);
       return setSelectedDate(date);
     }
     return setSelectedDate(null);
-  };
-
-  const filterTimeByRestaurantOpenWindow = () => {
-    const timesWithinWindow: typeof times = [];
-
-    let isWithinWindow = false;
-
-    times.forEach((time) => {
-      if (time.time === openTime) isWithinWindow = true;
-      if (isWithinWindow) timesWithinWindow.push(time);
-      if (time.time === closeTime) isWithinWindow = false;
-    });
-
-    return timesWithinWindow;
   };
 
   const handleClick = () => {
@@ -54,6 +40,26 @@ export default function ReservationCard({
       time,
       partySize,
     });
+  };
+
+  const filterTimeByRestaurantOpenWindow = () => {
+    const timesWithinWindow: typeof times = [];
+
+    let isWithinWindow = false;
+
+    times.forEach((time) => {
+      if (time.time === openTime) {
+        isWithinWindow = true;
+      }
+      if (isWithinWindow) {
+        timesWithinWindow.push(time);
+      }
+      if (time.time === closeTime) {
+        isWithinWindow = false;
+      }
+    });
+
+    return timesWithinWindow;
   };
 
   return (
@@ -70,9 +76,9 @@ export default function ReservationCard({
           value={partySize}
           onChange={(e) => setPartySize(e.target.value)}
         >
-          {PartySizes.map((item) => (
-            <option value={item.value} key={item.label}>
-              {item.label}
+          {partySizes.map((size) => (
+            <option key={size.value} value={size.value}>
+              {size.label}
             </option>
           ))}
         </select>
@@ -82,8 +88,8 @@ export default function ReservationCard({
           <label htmlFor="">Date</label>
           <DatePicker
             selected={selectedDate}
-            onChange={handleChange}
-            className="py-3 border-b font-light text-reg w-28"
+            onChange={handleChangeDate}
+            className="py-3 borber-b font-light text-reg w-24"
             dateFormat="MMMM d"
             wrapperClassName="w-[48%]"
           />
@@ -97,9 +103,9 @@ export default function ReservationCard({
             value={time}
             onChange={(e) => setTime(e.target.value)}
           >
-            {filterTimeByRestaurantOpenWindow().map((item) => (
-              <option key={item.time} value={item.time}>
-                {item.displayTime}
+            {filterTimeByRestaurantOpenWindow().map((time) => (
+              <option key={time.time} value={time.time}>
+                {time.displayTime}
               </option>
             ))}
           </select>
@@ -118,22 +124,27 @@ export default function ReservationCard({
         <div className="mt-4">
           <p className="text-reg">Select a Time</p>
           <div className="flex flex-wrap mt-2">
-            {data.map((t) => {
-              return t.available ? (
+            {data.map((time) => {
+              return time.available ? (
                 <Link
-                  key={t.time}
-                  href={`/reserve/${slug}?data=${day}T${t.time}&partySize=${partySize}`}
-                  className="bg-red-600 cursor-pointer p-2 w-24 text-center mb-3 rounded mr-3"
+                  key={time.time}
+                  href={`/reserve/${slug}?date=${day}T${time.time}&partySize=${partySize}`}
+                  className="bg-red-600 cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
                 >
                   <p className="text-sm font-bold">
-                    {convertToDisplayTime(t.time as Time)}
+                    {convertToDisplayTime(time.time as Time)}
                   </p>
                 </Link>
               ) : (
-                <p
-                  key={t.time}
-                  className="bg-gray-300 p-2 w-24 mb-3 rounded mr-3"
-                ></p>
+                <Link
+                  key={time.time}
+                  href={`/reserve/${slug}?date=${day}T${time.time}&partySize=${partySize}`}
+                  className="bg-red-600 cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
+                >
+                  <p className="text-sm font-bold">
+                    {convertToDisplayTime(time.time as Time)}
+                  </p>
+                </Link>
               );
             })}
           </div>

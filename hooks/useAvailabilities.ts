@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState } from "react";
+import axios from "axios";
 
 export default function useAvailabilities() {
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ export default function useAvailabilities() {
     time: string;
   }) => {
     setLoading(true);
+
     try {
       const response = await axios.get(
         `http://localhost:3000/api/restaurant/${slug}/availability`,
@@ -31,6 +32,7 @@ export default function useAvailabilities() {
           },
         }
       );
+      console.log(response);
       setLoading(false);
       setData(response.data);
     } catch (error: any) {
@@ -38,5 +40,6 @@ export default function useAvailabilities() {
       setError(error.response.data.errorMessage);
     }
   };
+
   return { loading, data, error, fetchAvailabilities };
 }

@@ -1,27 +1,33 @@
 import { PrismaClient, Table } from "@prisma/client";
-import { times } from "../../data";
 import { NextApiResponse } from "next";
-import { GetResult } from "@prisma/client/runtime";
+import { times } from "../../data";
 
 const prisma = new PrismaClient();
 
 export const findAvailabileTables = async ({
   time,
   day,
-  restaurant,
   res,
+  restaurant,
 }: {
   time: string;
   day: string;
-  restaurant: { tables: Table[]; open_time: string; close_time: string };
   res: NextApiResponse;
+  restaurant: {
+    tables: Table[];
+    open_time: string;
+    close_time: string;
+  };
 }) => {
   const searchTimes = times.find((t) => {
     return t.time === time;
   })?.searchTimes;
 
-  if (!searchTimes)
-    return res.status(400).json({ errorMessage: "Invalid data provided" });
+  if (!searchTimes) {
+    return res.status(400).json({
+      errorMessage: "Invalid data provided",
+    });
+  }
 
   const bookings = await prisma.booking.findMany({
     where: {
@@ -37,12 +43,15 @@ export const findAvailabileTables = async ({
     },
   });
 
-  const bookingTablesObject: { [key: string]: { [key: string]: true } } = {};
+  const bookingTablesObj: { [key: string]: { [key: number]: true } } = {};
 
   bookings.forEach((booking) => {
-    bookingTablesObject[booking.booking_time.toISOString()] =
+    bookingTablesObj[booking.booking_time.toISOString()] =
       booking.tables.reduce((obj, table) => {
-        return { ...obj, [table.table_id]: true };
+        return {
+          ...obj,
+          [table.table_id]: true,
+        };
       }, {});
   });
 
@@ -58,9 +67,9 @@ export const findAvailabileTables = async ({
 
   searchTimesWithTables.forEach((t) => {
     t.tables = t.tables.filter((table) => {
-      if (bookingTablesObject[t.date.toISOString()])
-        if (bookingTablesObject[t.date.toISOString()][table.id]) return false;
-
+      if (bookingTablesObj[t.date.toISOString()]) {
+        if (bookingTablesObj[t.date.toISOString()][table.id]) return false;
+      }
       return true;
     });
   });
